@@ -16,16 +16,16 @@ class App extends React.Component{
     }
   }
   handleChanges = e =>{
+    e.preventDefault()
     this.setState({
-      ...this.state,
       userName:e.target.value
     })
   }
-  fetchUsers = () =>{
+  fetchUsers = (e) =>{
+    e.preventDefault()
     axios.get(`https://api.github.com/users/${this.state.userName}`)
     .then(res =>{
       this.setState({
-        ...this.state,
         userName:res.data.name,
         userImage:res.data.avatar_url,
         userDescription: res.data.bio
@@ -38,7 +38,6 @@ class App extends React.Component{
     .then(res =>{
       console.log(res);
       this.setState({
-        ...this.state,
         userName:res.data.name,
         userImage:res.data.avatar_url,
         userDescription: res.data.bio
@@ -51,6 +50,12 @@ class App extends React.Component{
       console.log("users have changed")
     }
   }
+  onClick = e =>{
+    e.preventDefault()
+    this.setState({
+      userName:""
+    })
+  } 
   render(){
     return(
 
@@ -58,23 +63,24 @@ class App extends React.Component{
       //   <h1>Git Hub Users</h1>
       // </div>
 
-      <div>
-        <Card>
-          <CardImg topwidth="100%" src={this.state.user} alt="Card image cap"/>
+      <div className="App">
+        <div className="Header"><h1>Github User Cards</h1></div>
+        <Card className="Card">
+          <CardImg topwidth="100%" src={this.state.userImage} alt="Card image cap"/>
           <CardBody>
             <CardTitle tag="h5">{this.state.userName}</CardTitle>
             <CardText>{this.state.userDescription}</CardText>
           </CardBody>
         </Card>
-        <input 
+        <form onSubmit={this.fetchUsers}><input 
         placeholder="Github Username"
-        value=""
+        value={this.state.userName}
         type="text"
         onChange={this.handleChanges}
         />
         <Button 
         onClick={this.fetchUsers}
-        >Get Users Info</Button>
+        >Get Users Info</Button></form>
       </div>
     )
   }
